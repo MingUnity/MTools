@@ -185,11 +185,33 @@ namespace SlnBatchBuildTool
                     _view.BuildEnabled = false;
                 }
 
-                string slnExt = ".sln";
-
                 List<int> existedList = new List<int>();
 
                 List<string> invalidDirs = new List<string>();
+
+                List<string> searchedFileList = new List<string>();
+
+                Action<string> AddAct = new Action<string>((path) =>
+                {
+                    if (!string.IsNullOrEmpty(path) && File.Exists(path))
+                    {
+                        string ext = Path.GetExtension(path);
+
+                        if (".sln".Equals(ext, StringComparison.OrdinalIgnoreCase))
+                        {
+                            int index = _slns.slns.IndexOf(path);
+
+                            if (index >= 0)
+                            {
+                                existedList.Add(index);
+                            }
+                            else
+                            {
+                                _slns.slns.Add(path);
+                            }
+                        }
+                    }
+                });
 
                 for (int i = 0; i < files.Length; i++)
                 {
@@ -199,33 +221,29 @@ namespace SlnBatchBuildTool
                     {
                         if (Directory.Exists(path))
                         {
-                            string dir = path;
+                            string[] searchedFiles = Directory.GetFiles(path, "*.sln", SearchOption.AllDirectories);
 
-                            //找到文件夹中第一个sln并输出
-                            if (!FindSln(dir, out path))
+                            if (searchedFiles != null && searchedFiles.Length > 0)
                             {
-                                invalidDirs.Add(dir);
+                                searchedFileList.AddRange(searchedFiles);
+                            }
+                            else
+                            {
+                                invalidDirs.Add(path);
                             }
                         }
-
-                        if (File.Exists(path))
+                        else
                         {
-                            string ext = Path.GetExtension(path);
-
-                            if (slnExt.Equals(ext, StringComparison.OrdinalIgnoreCase))
-                            {
-                                int index = _slns.slns.IndexOf(path);
-
-                                if (index >= 0)
-                                {
-                                    existedList.Add(index);
-                                }
-                                else
-                                {
-                                    _slns.slns.Add(path);
-                                }
-                            }
+                            AddAct.Invoke(path);
                         }
+                    }
+                }
+
+                if (searchedFileList.Count > 0)
+                {
+                    for (int i = 0; i < searchedFileList.Count; i++)
+                    {
+                        AddAct.Invoke(searchedFileList[i]);
                     }
                 }
 
@@ -235,7 +253,7 @@ namespace SlnBatchBuildTool
 
                 if (invalidDirs.Count > 0)
                 {
-                    StringBuilder stringBuilder = new StringBuilder("Following directory don't contains any sln files : ");
+                    StringBuilder stringBuilder = new StringBuilder("Following directory dones't contains any sln files : ");
 
                     for (int i = 0; i < invalidDirs.Count; i++)
                     {
@@ -339,46 +357,6 @@ namespace SlnBatchBuildTool
                     _slns = formatter.Deserialize(stream) as SlnContainer;
                 }
             }
-        }
-
-        private bool FindSln(string dir, out string path)
-        {
-            bool res = false;
-
-            path = null;
-
-            string ext = "*.sln";
-
-            if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
-            {
-                string[] files = Directory.GetFiles(dir, ext);
-
-                if (files != null && files.Length > 0)
-                {
-                    path = files[0];
-
-                    res = true;
-                }
-                else
-                {
-                    string[] dirs = Directory.GetDirectories(dir);
-
-                    if (dirs != null && dirs.Length > 0)
-                    {
-                        for (int i = 0; i < dirs.Length; i++)
-                        {
-                            res = FindSln(dirs[i], out path);
-
-                            if (res)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return res;
         }
 
         private void ResetBuild()
