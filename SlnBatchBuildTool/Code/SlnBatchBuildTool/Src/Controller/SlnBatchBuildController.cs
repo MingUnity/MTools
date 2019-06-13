@@ -89,51 +89,60 @@ namespace SlnBatchBuildTool
 
         public void Build()
         {
-            if (_view != null)
-            {
-                _view.BuildContent = "Building...";
-
-                _view.BuildEnabled = false;
-            }
-
             if (_builder != null)
             {
                 if (_builder.IsValid)
                 {
                     if (_slns != null && _slns.slns != null)
                     {
-                        List<int> indexList = new List<int>();
-
-                        for (int i = 0; i < _slns.slns.Count; i++)
+                        if (_slns.slns.Count > 0)
                         {
-                            string sln = _slns.slns[i];
-
-                            if (!string.IsNullOrEmpty(sln) && File.Exists(sln))
+                            if (_view != null)
                             {
-                                _builder.Build(sln);
+                                _view.BuildContent = "Building...";
+
+                                _view.BuildEnabled = false;
+                            }
+
+                            List<int> indexList = new List<int>();
+
+                            for (int i = 0; i < _slns.slns.Count; i++)
+                            {
+                                string sln = _slns.slns[i];
+
+                                if (!string.IsNullOrEmpty(sln) && File.Exists(sln))
+                                {
+                                    _builder.Build(sln);
+                                }
+                                else
+                                {
+                                    indexList.Add(i);
+                                }
+                            }
+
+                            ResetBuild();
+
+                            if (indexList.Count > 0)
+                            {
+                                StringBuilder stringBuilder = new StringBuilder("Build done , following sln not existed : ");
+
+                                for (int i = 0; i < indexList.Count; i++)
+                                {
+                                    stringBuilder.Append("\r\n");
+
+                                    stringBuilder.Append(_slns.slns[i]);
+                                }
+
+                                MessageBox.Show(stringBuilder.ToString(), "Warning");
                             }
                             else
                             {
-                                indexList.Add(i);
+                                MessageBox.Show("Build done", "Tip");
                             }
-                        }
-
-                        if (indexList.Count > 0)
-                        {
-                            StringBuilder stringBuilder = new StringBuilder("Build done , following sln not existed : ");
-
-                            for (int i = 0; i < indexList.Count; i++)
-                            {
-                                stringBuilder.Append("\r\n");
-
-                                stringBuilder.Append(_slns.slns[i]);
-                            }
-
-                            MessageBox.Show(stringBuilder.ToString(), "Warning");
                         }
                         else
                         {
-                            MessageBox.Show("Build done", "Tip");
+                            MessageBox.Show("No sln file need to build", "Warning");
                         }
                     }
                 }
@@ -142,8 +151,6 @@ namespace SlnBatchBuildTool
                     MessageBox.Show("Build tool is invalid");
                 }
             }
-
-            ResetBuild();
         }
 
         public void FocusSln()
@@ -251,6 +258,8 @@ namespace SlnBatchBuildTool
 
                 RefreshViewList();
 
+                ResetBuild();
+
                 if (invalidDirs.Count > 0)
                 {
                     StringBuilder stringBuilder = new StringBuilder("Following directory dones't contains any sln files : ");
@@ -280,8 +289,6 @@ namespace SlnBatchBuildTool
 
                     _view.SelectedIndex = existedList.ToArray();
                 }
-
-                ResetBuild();
             }
         }
 
