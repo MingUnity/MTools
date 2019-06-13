@@ -21,5 +21,7 @@
         void AddDll();
 
         void CreateKeystore();
+
+        void ShowPassword();
     }
 }

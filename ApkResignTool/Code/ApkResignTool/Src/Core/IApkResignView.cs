@@ -23,5 +23,7 @@ namespace ApkResignTool
         string Tip { get; set; }
 
         bool SignEnabled { get; set; }
+
+        bool ShowPassword { get; set; }
     }
 }

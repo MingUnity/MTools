@@ -365,6 +365,17 @@ namespace ApkResignTool
             keyTool.Create(CreateKeystoreResult);
         }
 
+        /// <summary>
+        /// 显示密码
+        /// </summary>
+        public void ShowPassword()
+        {
+            if (_view != null)
+            {
+                _view.ShowPassword = !_view.ShowPassword;
+            }
+        }
+
         #endregion
 
         #region Private Func

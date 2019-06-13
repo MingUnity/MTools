@@ -44,6 +44,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.btnAddDll = new System.Windows.Forms.Button();
             this.btnCreateKeystore = new System.Windows.Forms.Button();
+            this.btnShowPwd = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -66,7 +67,7 @@
             // 
             // btnKeystorePicker
             // 
-            this.btnKeystorePicker.Location = new System.Drawing.Point(453, 70);
+            this.btnKeystorePicker.Location = new System.Drawing.Point(453, 71);
             this.btnKeystorePicker.Name = "btnKeystorePicker";
             this.btnKeystorePicker.Size = new System.Drawing.Size(32, 23);
             this.btnKeystorePicker.TabIndex = 2;
@@ -132,7 +133,7 @@
             // 
             // btnApk
             // 
-            this.btnApk.Location = new System.Drawing.Point(453, 211);
+            this.btnApk.Location = new System.Drawing.Point(453, 212);
             this.btnApk.Name = "btnApk";
             this.btnApk.Size = new System.Drawing.Size(32, 23);
             this.btnApk.TabIndex = 10;
@@ -154,7 +155,7 @@
             // 
             // btnSdkDir
             // 
-            this.btnSdkDir.Location = new System.Drawing.Point(453, 23);
+            this.btnSdkDir.Location = new System.Drawing.Point(453, 24);
             this.btnSdkDir.Name = "btnSdkDir";
             this.btnSdkDir.Size = new System.Drawing.Size(32, 23);
             this.btnSdkDir.TabIndex = 14;
@@ -184,7 +185,7 @@
             // btnAddDll
             // 
             this.btnAddDll.Font = new System.Drawing.Font("宋体", 12F);
-            this.btnAddDll.Location = new System.Drawing.Point(491, 211);
+            this.btnAddDll.Location = new System.Drawing.Point(491, 212);
             this.btnAddDll.Name = "btnAddDll";
             this.btnAddDll.Size = new System.Drawing.Size(27, 23);
             this.btnAddDll.TabIndex = 16;
@@ -197,7 +198,7 @@
             // btnCreateKeystore
             // 
             this.btnCreateKeystore.Font = new System.Drawing.Font("宋体", 12F);
-            this.btnCreateKeystore.Location = new System.Drawing.Point(491, 70);
+            this.btnCreateKeystore.Location = new System.Drawing.Point(491, 71);
             this.btnCreateKeystore.Name = "btnCreateKeystore";
             this.btnCreateKeystore.Size = new System.Drawing.Size(27, 23);
             this.btnCreateKeystore.TabIndex = 17;
@@ -207,12 +208,24 @@
             this.btnCreateKeystore.UseVisualStyleBackColor = true;
             this.btnCreateKeystore.Click += new System.EventHandler(this.btnCreateKeystore_Click);
             // 
+            // btnShowPwd
+            // 
+            this.btnShowPwd.Font = new System.Drawing.Font("宋体", 9F);
+            this.btnShowPwd.Location = new System.Drawing.Point(453, 120);
+            this.btnShowPwd.Name = "btnShowPwd";
+            this.btnShowPwd.Size = new System.Drawing.Size(23, 23);
+            this.btnShowPwd.TabIndex = 18;
+            this.btnShowPwd.TabStop = false;
+            this.btnShowPwd.UseVisualStyleBackColor = true;
+            this.btnShowPwd.Click += new System.EventHandler(this.btnShowPwd_Click);
+            // 
             // ApkResignView
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(530, 316);
+            this.Controls.Add(this.btnShowPwd);
             this.Controls.Add(this.btnCreateKeystore);
             this.Controls.Add(this.btnAddDll);
             this.Controls.Add(this.btnSdkDir);
@@ -257,6 +270,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnAddDll;
         private System.Windows.Forms.Button btnCreateKeystore;
+        private System.Windows.Forms.Button btnShowPwd;
     }
 }
 

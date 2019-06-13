@@ -108,6 +108,18 @@ namespace ApkResignTool
             }
         }
 
+        public bool ShowPassword
+        {
+            get
+            {
+                return txtPassword.PasswordChar == Char.MinValue;
+            }
+            set
+            {
+                txtPassword.PasswordChar = value ? Char.MinValue : '*';
+            }
+        }
+
         private void btnKeystorePicker_Click(object sender, EventArgs e)
         {
             _controller?.PickKeystore();
@@ -175,6 +187,11 @@ namespace ApkResignTool
         private void btnCreateKeystore_Click(object sender, EventArgs e)
         {
             _controller?.CreateKeystore();
+        }
+
+        private void btnShowPwd_Click(object sender, EventArgs e)
+        {
+            _controller?.ShowPassword();
         }
     }
 }
