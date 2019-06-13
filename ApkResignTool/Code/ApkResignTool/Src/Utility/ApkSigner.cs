@@ -43,7 +43,7 @@ namespace ApkResignTool
                             {
                                 if (bSuccess)
                                 {
-                                    string args = string.Format("-verbose -keystore {0} -storepass {1} -signedjar {2} {3} {4}", keystore, password, outputApk, apk, alias);
+                                    string args = string.Format("-verbose -keystore \"{0}\" -storepass {1} -signedjar \"{2}\" \"{3}\" {4}", keystore, password, outputApk, apk, alias);
 
                                     RunJarSigner(jarSignerPath, args, (cSuccess, cTip) =>
                                     {
