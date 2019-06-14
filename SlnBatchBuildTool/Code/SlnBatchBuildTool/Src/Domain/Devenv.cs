@@ -74,10 +74,7 @@ namespace SlnBatchBuildTool
         {
             string result = string.Empty;
 
-            if (!GetPathByAppPaths(out result))
-            {
-                GetPathBySxs(out result);
-            }
+            GetPathBySxs(out result);
 
             return result;
         }
