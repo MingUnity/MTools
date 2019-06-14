@@ -11,5 +11,7 @@
         void HandleDragFile(string[] files);
 
         void FocusSln();
+
+        void SaveConcurrentCount();
     }
 }

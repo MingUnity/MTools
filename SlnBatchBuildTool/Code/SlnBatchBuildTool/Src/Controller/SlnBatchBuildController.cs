@@ -13,7 +13,7 @@ namespace SlnBatchBuildTool
     {
         private ISlnBatchBuildView _view;
 
-        private SlnContainer _slns;
+        private ToolData _data;
 
         private string _dataPath;
 
@@ -28,13 +28,13 @@ namespace SlnBatchBuildTool
                 _view.Controller = this;
             }
 
-            _slns = new SlnContainer();
+            _data = new ToolData();
 
-            _dataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SlnBatchBuildTool", "Config", "Slns.mdat");
+            _dataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SlnBatchBuildTool", "Config", "BatchBuilder.mdat");
 
             ReadData();
 
-            RefreshViewList();
+            RefreshView();
 
             _builder = new Devenv();
         }
@@ -62,7 +62,7 @@ namespace SlnBatchBuildTool
 
         public void RemoveSln()
         {
-            if (_slns == null || _slns.slns == null)
+            if (_data == null || _data.slns == null)
             {
                 return;
             }
@@ -71,19 +71,19 @@ namespace SlnBatchBuildTool
 
             if (seletectIndexArr != null && seletectIndexArr.Length > 0)
             {
-                int count = _slns.slns.Count;
+                int count = _data.slns.Count;
 
                 for (int i = count - 1; i >= 0; i--)
                 {
                     if (seletectIndexArr.Contains(i))
                     {
-                        _slns.slns.RemoveAt(i);
+                        _data.slns.RemoveAt(i);
                     }
                 }
 
                 SaveData();
 
-                RefreshViewList();
+                RefreshView();
             }
         }
 
@@ -93,9 +93,9 @@ namespace SlnBatchBuildTool
             {
                 if (_builder.IsValid)
                 {
-                    if (_slns != null && _slns.slns != null)
+                    if (_data != null && _data.slns != null)
                     {
-                        if (_slns.slns.Count > 0)
+                        if (_data.slns.Count > 0)
                         {
                             if (_view != null)
                             {
@@ -104,33 +104,37 @@ namespace SlnBatchBuildTool
                                 _view.BuildEnabled = false;
                             }
 
-                            List<int> indexList = new List<int>();
+                            List<int> invalidIndexList = new List<int>();
 
-                            for (int i = 0; i < _slns.slns.Count; i++)
+                            List<string> workSlns = new List<string>();
+
+                            for (int i = 0; i < _data.slns.Count; i++)
                             {
-                                string sln = _slns.slns[i];
+                                string sln = _data.slns[i];
 
                                 if (!string.IsNullOrEmpty(sln) && File.Exists(sln))
                                 {
-                                    _builder.Build(sln);
+                                    workSlns.Add(sln);
                                 }
                                 else
                                 {
-                                    indexList.Add(i);
+                                    invalidIndexList.Add(i);
                                 }
                             }
 
+                            _builder.ConcurrentBuild(workSlns.ToArray(), _data.maxConcurrentCount);
+
                             ResetBuild();
 
-                            if (indexList.Count > 0)
+                            if (invalidIndexList.Count > 0)
                             {
                                 StringBuilder stringBuilder = new StringBuilder("Build done , following sln not existed : ");
 
-                                for (int i = 0; i < indexList.Count; i++)
+                                for (int i = 0; i < invalidIndexList.Count; i++)
                                 {
                                     stringBuilder.Append("\r\n");
 
-                                    stringBuilder.Append(_slns.slns[i]);
+                                    stringBuilder.Append(_data.slns[i]);
                                 }
 
                                 MessageBox.Show(stringBuilder.ToString(), "Warning");
@@ -181,9 +185,25 @@ namespace SlnBatchBuildTool
             HandleSlnFile(files);
         }
 
+        public void SaveConcurrentCount()
+        {
+            if (_data != null && _view != null)
+            {
+                int count = _view.MaxConcurrentCount;
+
+                count = count > 10 ? 10 : count <= 0 ? 1 : count;
+
+                _view.MaxConcurrentCount = count;
+
+                _data.maxConcurrentCount = count;
+
+                SaveData();
+            }
+        }
+
         private void HandleSlnFile(string[] files)
         {
-            if (files != null && _slns != null && _slns.slns != null)
+            if (files != null && _data != null && _data.slns != null)
             {
                 if (_view != null)
                 {
@@ -206,7 +226,7 @@ namespace SlnBatchBuildTool
 
                         if (".sln".Equals(ext, StringComparison.OrdinalIgnoreCase))
                         {
-                            int index = _slns.slns.IndexOf(path);
+                            int index = _data.slns.IndexOf(path);
 
                             if (index >= 0)
                             {
@@ -214,7 +234,7 @@ namespace SlnBatchBuildTool
                             }
                             else
                             {
-                                _slns.slns.Add(path);
+                                _data.slns.Add(path);
                             }
                         }
                     }
@@ -256,7 +276,7 @@ namespace SlnBatchBuildTool
 
                 SaveData();
 
-                RefreshViewList();
+                RefreshView();
 
                 ResetBuild();
 
@@ -282,7 +302,7 @@ namespace SlnBatchBuildTool
                     {
                         stringBuilder.Append("\r\n");
 
-                        stringBuilder.Append(_slns.slns[existedList[i]]);
+                        stringBuilder.Append(_data.slns[existedList[i]]);
                     }
 
                     MessageBox.Show(stringBuilder.ToString(), "Warning");
@@ -292,25 +312,30 @@ namespace SlnBatchBuildTool
             }
         }
 
-        private void RefreshViewList()
+        private void RefreshView()
         {
-            if (_view != null && _slns != null && _slns.slns != null)
+            if (_view != null && _data != null)
             {
-                string[] arr = new string[_slns.slns.Count];
-
-                for (int i = 0; i < _slns.slns.Count; i++)
+                if (_data.slns != null)
                 {
-                    string sln = _slns.slns[i];
+                    string[] arr = new string[_data.slns.Count];
 
-                    if (!string.IsNullOrEmpty(sln))
+                    for (int i = 0; i < _data.slns.Count; i++)
                     {
-                        string fileName = Path.GetFileName(sln);
+                        string sln = _data.slns[i];
 
-                        arr[i] = fileName;
+                        if (!string.IsNullOrEmpty(sln))
+                        {
+                            string fileName = Path.GetFileName(sln);
+
+                            arr[i] = fileName;
+                        }
                     }
+
+                    _view.ListItems = arr;
                 }
 
-                _view.ListItems = arr;
+                _view.MaxConcurrentCount = _data.maxConcurrentCount;
             }
         }
 
@@ -320,9 +345,9 @@ namespace SlnBatchBuildTool
 
             path = null;
 
-            if (index >= 0 && _slns != null && _slns.slns != null && _slns.slns.Count > index)
+            if (index >= 0 && _data != null && _data.slns != null && _data.slns.Count > index)
             {
-                path = _slns.slns[index];
+                path = _data.slns[index];
 
                 res = true;
             }
@@ -332,7 +357,7 @@ namespace SlnBatchBuildTool
 
         private void SaveData()
         {
-            if (_slns != null)
+            if (_data != null)
             {
                 if (!string.IsNullOrEmpty(_dataPath))
                 {
@@ -347,7 +372,7 @@ namespace SlnBatchBuildTool
                     {
                         BinaryFormatter formatter = new BinaryFormatter();
 
-                        formatter.Serialize(fileStream, _slns);
+                        formatter.Serialize(fileStream, _data);
                     }
                 }
             }
@@ -361,7 +386,7 @@ namespace SlnBatchBuildTool
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
 
-                    _slns = formatter.Deserialize(stream) as SlnContainer;
+                    _data = formatter.Deserialize(stream) as ToolData;
                 }
             }
         }

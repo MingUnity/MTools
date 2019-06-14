@@ -86,6 +86,22 @@ namespace SlnBatchBuildTool
             }
         }
 
+        public int MaxConcurrentCount
+        {
+            get
+            {
+                int res = 0;
+
+                int.TryParse(txtConcurrentCount.Text, out res);
+
+                return res;
+            }
+            set
+            {
+                txtConcurrentCount.Text = value.ToString();
+            }
+        }
+
         public SlnBatchBuildView()
         {
             InitializeComponent();
@@ -138,6 +154,22 @@ namespace SlnBatchBuildTool
         private void listSlns_DoubleClick(object sender, EventArgs e)
         {
             _controller?.FocusSln();
+        }
+
+        private void txtConcurrentCount_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != '\b')//这是允许输入退格键  
+            {
+                if ((e.KeyChar < '0') || (e.KeyChar > '9'))//这是允许输入0-9数字  
+                {
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void txtConcurrentCount_Leave(object sender, EventArgs e)
+        {
+            _controller?.SaveConcurrentCount();
         }
     }
 }

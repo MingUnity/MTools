@@ -50,7 +50,7 @@
     <Compile Include="Src\Controller\SlnBatchBuildController.cs" />
     <Compile Include="Src\Domain\Devenv.cs" />
     <Compile Include="Src\Domain\IBuilder.cs" />
-    <Compile Include="Src\Model\SlnContainer.cs" />
+    <Compile Include="Src\Model\ToolData.cs" />
     <Compile Include="Src\View\ISlnBatchBuildView.cs" />
     <Compile Include="Src\View\SlnBatchBuildView.cs">
       <SubType>Form</SubType>

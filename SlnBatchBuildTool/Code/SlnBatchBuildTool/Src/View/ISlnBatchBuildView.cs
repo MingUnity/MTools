@@ -25,5 +25,10 @@ namespace SlnBatchBuildTool
         /// 编译按钮内容
         /// </summary>
         string BuildContent { get; set; }
+
+        /// <summary>
+        /// 最大并发数
+        /// </summary>
+        int MaxConcurrentCount { get; set; }
     }
 }

@@ -4,11 +4,13 @@ using System.Collections.Generic;
 namespace SlnBatchBuildTool
 {
     /// <summary>
-    /// sln工程数据
+    /// 工具数据
     /// </summary>
     [Serializable]
-    public class SlnContainer
+    public class ToolData
     {
         public List<string> slns = new List<string>();
+
+        public int maxConcurrentCount = 4;
     }
 }

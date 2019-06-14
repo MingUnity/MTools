@@ -164,13 +164,13 @@ namespace ApkResignTool
 
                 startinfo.FileName = _winRarExe;
 
-                startinfo.Arguments = args;               //设置命令参数  
+                startinfo.Arguments = args;  
                 
                 unrar.StartInfo = startinfo;
 
                 unrar.Start();
 
-                unrar.WaitForExit();//等待解压完成  
+                unrar.WaitForExit();
 
                 unrar.Close();
             }

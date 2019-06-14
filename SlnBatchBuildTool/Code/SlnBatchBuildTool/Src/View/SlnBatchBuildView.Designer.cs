@@ -32,13 +32,14 @@
             this.btnAdd = new System.Windows.Forms.Button();
             this.listSlns = new System.Windows.Forms.ListBox();
             this.btnReduce = new System.Windows.Forms.Button();
+            this.txtConcurrentCount = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnBuild
             // 
             this.btnBuild.Location = new System.Drawing.Point(12, 118);
             this.btnBuild.Name = "btnBuild";
-            this.btnBuild.Size = new System.Drawing.Size(233, 25);
+            this.btnBuild.Size = new System.Drawing.Size(233, 21);
             this.btnBuild.TabIndex = 0;
             this.btnBuild.TabStop = false;
             this.btnBuild.Text = "Build";
@@ -84,11 +85,24 @@
             this.btnReduce.UseVisualStyleBackColor = true;
             this.btnReduce.Click += new System.EventHandler(this.btnReduce_Click);
             // 
+            // txtConcurrentCount
+            // 
+            this.txtConcurrentCount.Location = new System.Drawing.Point(251, 118);
+            this.txtConcurrentCount.MaxLength = 2;
+            this.txtConcurrentCount.Name = "txtConcurrentCount";
+            this.txtConcurrentCount.Size = new System.Drawing.Size(21, 21);
+            this.txtConcurrentCount.TabIndex = 5;
+            this.txtConcurrentCount.TabStop = false;
+            this.txtConcurrentCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtConcurrentCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtConcurrentCount_KeyPress);
+            this.txtConcurrentCount.Leave += new System.EventHandler(this.txtConcurrentCount_Leave);
+            // 
             // SlnBatchBuildView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 162);
+            this.Controls.Add(this.txtConcurrentCount);
             this.Controls.Add(this.btnReduce);
             this.Controls.Add(this.listSlns);
             this.Controls.Add(this.btnAdd);
@@ -98,6 +112,7 @@
             this.Name = "SlnBatchBuildView";
             this.Text = "SlnBatchBuildTool";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -107,6 +122,7 @@
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.ListBox listSlns;
         private System.Windows.Forms.Button btnReduce;
+        private System.Windows.Forms.TextBox txtConcurrentCount;
     }
 }
 

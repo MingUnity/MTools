@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace SlnBatchBuildTool
 {
@@ -13,6 +14,11 @@ namespace SlnBatchBuildTool
     public class Devenv : IBuilder
     {
         private string _path;
+
+        /// <summary>
+        /// 异步编译队列
+        /// </summary>
+        private Queue<string> _asyncBuildQueue;
 
         /// <summary>
         /// 有效性
@@ -48,6 +54,20 @@ namespace SlnBatchBuildTool
 
                 Run(args);
             }
+        }
+
+        public void ConcurrentBuild(string[] slns, int maxConcurrentCount = 4)
+        {
+            if (slns != null && slns.Length > 0)
+            {
+                _asyncBuildQueue = new Queue<string>(slns);
+
+                RunTask(maxConcurrentCount);
+            }
+
+            _asyncBuildQueue.Clear();
+
+            _asyncBuildQueue = null;
         }
 
         private void Run(string args)
@@ -179,6 +199,50 @@ namespace SlnBatchBuildTool
             {
                 return null;
             }
+        }
+
+        private void RunTask(int maxConcurrentCount)
+        {
+            if (maxConcurrentCount <= 0)
+            {
+                maxConcurrentCount = 1;
+            }
+
+            int curConcurrentCount = 0;
+
+            while (_asyncBuildQueue.Count > 0 || curConcurrentCount > 0)
+            {
+                if (_asyncBuildQueue.Count > 0 && curConcurrentCount < maxConcurrentCount)
+                {
+                    string sln = string.Empty;
+
+                    lock (_asyncBuildQueue)
+                    {
+                        sln = _asyncBuildQueue.Dequeue();
+                    }
+
+                    curConcurrentCount++;
+
+                    AsyncBuild(sln, () =>
+                    {
+                        curConcurrentCount--;
+                    });
+                }
+                else
+                {
+                    Thread.Sleep(100);
+                }
+            }
+        }
+
+        private void AsyncBuild(string sln, Action callback = null)
+        {
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                Build(sln);
+
+                callback?.Invoke();
+            });
         }
     }
 }
