@@ -171,5 +171,13 @@ namespace SlnBatchBuildTool
         {
             _controller?.SaveConcurrentCount();
         }
+
+        private void listSlns_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e != null && e.KeyCode == Keys.Delete)
+            {
+                _controller?.RemoveSln();
+            }
+        }
     }
 }

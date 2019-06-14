@@ -217,5 +217,21 @@ namespace ReferenceReplaceTool
         {
             _controller?.FocusDll();
         }
+
+        private void listCsproj_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e != null && e.KeyCode == Keys.Delete)
+            {
+                _controller?.ReduceCsproj();
+            }
+        }
+
+        private void listDll_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e != null && e.KeyCode == Keys.Delete)
+            {
+                _controller?.ReduceDll();
+            }
+        }
     }
 }

@@ -51,6 +51,7 @@
             this.listCsproj.DragDrop += new System.Windows.Forms.DragEventHandler(this.listCsproj_DragDrop);
             this.listCsproj.DragEnter += new System.Windows.Forms.DragEventHandler(this.listCsproj_DragEnter);
             this.listCsproj.DoubleClick += new System.EventHandler(this.listCsproj_DoubleClick);
+            this.listCsproj.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listCsproj_KeyDown);
             // 
             // listDll
             // 
@@ -66,6 +67,7 @@
             this.listDll.DragDrop += new System.Windows.Forms.DragEventHandler(this.listDll_DragDrop);
             this.listDll.DragEnter += new System.Windows.Forms.DragEventHandler(this.listDll_DragEnter);
             this.listDll.DoubleClick += new System.EventHandler(this.listDll_DoubleClick);
+            this.listDll.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listDll_KeyDown);
             // 
             // btnReplace
             // 

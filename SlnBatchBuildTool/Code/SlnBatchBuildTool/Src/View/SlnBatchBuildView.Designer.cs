@@ -72,6 +72,7 @@
             this.listSlns.DragDrop += new System.Windows.Forms.DragEventHandler(this.listSlns_DragDrop);
             this.listSlns.DragEnter += new System.Windows.Forms.DragEventHandler(this.listSlns_DragEnter);
             this.listSlns.DoubleClick += new System.EventHandler(this.listSlns_DoubleClick);
+            this.listSlns.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listSlns_KeyDown);
             // 
             // btnReduce
             // 
